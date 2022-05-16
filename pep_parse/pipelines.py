@@ -1,6 +1,7 @@
 import datetime as dt
 import os
 from pathlib import Path
+from scrapy.exceptions import DropItem
 
 BASE_DIR = Path(__file__).parent.parent
 DATETIME_FORMAT = '%Y-%d-%mT%H-%M-%S'
@@ -17,11 +18,14 @@ class PepParsePipeline:
         self.statuses = {}
 
     def process_item(self, item, spider):
-        if item['status'] in self.statuses.keys():
-            self.statuses[item['status']] += 1
+        if 'status' in item.keys():
+            if item['status'] in self.statuses.keys():
+                self.statuses[item['status']] += 1
+            else:
+                self.statuses[item['status']] = 1
+            return item
         else:
-            self.statuses[item['status']] = 1
-        return item
+            raise DropItem('Статус не найден!')
 
     def close_spider(self, spider):
         total = 0

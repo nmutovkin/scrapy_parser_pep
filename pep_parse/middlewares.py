@@ -1,22 +1,17 @@
-# Define here the models for your spider middleware
-#
-# See documentation in:
-# https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-
 from scrapy import signals
 
 
 class PepParseSpiderMiddleware:
-    # Not all methods need to be defined. If a method is not defined,
-    # scrapy acts as if the spider middleware does not modify the
-    # passed objects.
 
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
-        s = cls()
-        crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-        return s
+        obj = cls()
+        crawler.signals.connect(
+            obj.spider_opened,
+            signal=signals.spider_opened
+        )
+        return obj
 
     def process_spider_input(self, response, spider):
         # Called for each response that goes through the spider
@@ -46,8 +41,8 @@ class PepParseSpiderMiddleware:
         # that it doesn’t have a response associated.
 
         # Must return only requests (not items).
-        for r in start_requests:
-            yield r
+        for request in start_requests:
+            yield request
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
@@ -61,9 +56,12 @@ class PepParseDownloaderMiddleware:
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
-        s = cls()
-        crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-        return s
+        obj = cls()
+        crawler.signals.connect(
+            obj.spider_opened,
+            signal=signals.spider_opened
+        )
+        return obj
 
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
